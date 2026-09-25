@@ -1,0 +1,134 @@
+---
+title: "Supporting materials: Forecasting the words of later self-descriptions"
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+library(tidyverse)
+r <- function(f) read_csv(file.path("results",f),show_col_types=FALSE)
+tab <- function(f,digits=4) knitr::kable(r(f),digits=digits)
+```
+
+## Sample and missingness
+
+All tables refer to the 200 public pairs unless otherwise indicated. Missing
+categorical predictors are encoded as a separate level. Follow-up demographic
+fields are never used as predictors.
+
+```{r}
+tab("sample_summary.csv",2)
+tab("ethnicity.csv",0)
+tab("demographic_completeness.csv",0)
+```
+
+## Whole-response paired contrasts
+
+Differences are within participant; positive values favor repeating the
+participant's earlier text. Intervals are percentile bootstrap intervals.
+
+```{r}
+tab("text_forecast_contrasts.csv")
+```
+
+## Probability scores and paired contrasts
+
+All-person Brier loss includes all participants. Conditional metrics omit a
+participant if their relevant word stratum is empty. Average precision omits
+participants without a positive word in the relevant target set. None of these
+omissions affects Brier loss across the full vocabulary. `ap_absent` evaluates
+only words absent at baseline. Positive Brier contrasts favor the second model;
+positive AP contrasts favor the population model because the contrast is always
+population minus model.
+
+```{r}
+tab("word_score_summary.csv")
+tab("word_brier_contrasts.csv",6)
+tab("innovation_contrasts.csv",6)
+```
+
+## Vocabulary and fold checks
+
+Vocabularies use training follow-up document frequency only. Targets can differ
+between folds, so these are not fixed universal vocabulary scores. Coverage is
+the fraction of later unique content words included. Increasing the threshold
+changes the population of words as well as prediction difficulty; compare
+models within a threshold, not raw Brier values across thresholds.
+
+```{r}
+tab("fold_diagnostics.csv")
+tab("vocabulary_sensitivity.csv")
+```
+
+## Partition sensitivity and original source split
+
+These checks were added after the initial analysis. Each alternative partition
+again excludes the evaluated participant from all fitting. Repeated partitions
+are not independent samples and their range is not a confidence interval. Only
+population and transition forecasts are refitted here. The fixed original split
+fits on the 150 public training pairs and evaluates the 50 development pairs;
+these are the same people already included in the main cross-validation.
+
+```{r}
+tab("partition_sensitivity.csv",6)
+tab("original_split_summary.csv",6)
+```
+
+## Ridge tuning
+
+Each row records the average inner-validation squared loss at a candidate
+penalty. Input scaling and both input and output vocabularies are fitted inside
+each inner training split. Three inner folds are shared across feature models
+within each outer fold. The selected penalty is common across words. The dual
+ridge solution uses $(XX^{T}+n\lambda I)^{-1}$ with centered outcomes; fitted
+intercepts are their training means. Predictions are clipped before scoring.
+
+```{r}
+r("tuning.csv") |> filter(selected) |> knitr::kable(digits=5)
+```
+
+## Calibration
+
+Bins pool held-out participant–word predictions and therefore contain dependent
+observations. These descriptive summaries are not independent binomial trials
+and have no binomial confidence intervals. A model can be well calibrated on
+average while discriminating poorly between individuals.
+
+```{r}
+tab("calibration.csv")
+```
+
+## Frequent-word transitions
+
+Rows below have at least 30 baseline mentions among the folds in which they
+were eligible. `n` can differ across words because eligibility is fold-specific.
+These are descriptive estimates on evaluated outcomes, not fitted model
+parameters or confirmatory comparisons between identity domains. Word meanings
+and context are not adjudicated.
+
+```{r}
+r("word_transitions.csv") |> filter(baseline_present>=30) |> knitr::kable(digits=3)
+```
+
+## Computation and verification
+
+All data work and figures use R and tidyverse conventions. Original files are
+preserved and hash-checked. The protocol, source search record, and complete
+participant-level prediction files accompany the article. The stop list is
+specified directly in `analysis/helpers.R`; no external dictionary or language
+model is required. R's default Mersenne-Twister generator is seeded with
+20260925 for the primary analyses; alternative partitions use the seeds shown.
+
+```{r}
+cat(paste(readLines("results/verification.txt"),collapse="\n"))
+```
+
+```{r}
+cat(paste(readLines("results/sessionInfo.txt"),collapse="\n"))
+```

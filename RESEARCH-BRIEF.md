@@ -84,6 +84,8 @@ Use the *JJJ Pro Who am I?* data described within the preprint *Building the Ips
 
 Look for other available longitudinal self-authored, self-description data. If you find anything suitable, conduct empiricial research with it, too.
 
+Prefer R for data work, including analysis and visualization. Prefer tidyverse conventions in R. Use python as you wish, but not pandas.
+
 ## Desired outcome
 
 A full research article suitable for submission, with complete reproducible analysis and supporting materials.

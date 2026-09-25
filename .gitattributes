@@ -1,0 +1,9 @@
+# Preserve the supplied brief's CRLF line endings during whitespace checks.
+RESEARCH-BRIEF.md whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Research inputs must retain their exact bytes, including respondent whitespace.
+data/raw/*.csv -text -whitespace
+
+# Keep generated outputs unchanged; their generators emit trailing spaces.
+manuscript/*.html -whitespace
+results/sessionInfo.txt -whitespace

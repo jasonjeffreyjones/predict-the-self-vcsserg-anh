@@ -1,0 +1,11 @@
+.venv/
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+.quarto/
+.DS_Store
+__pycache__/
+*.py[cod]
+manuscript/*_files/
+manuscript/.quarto/

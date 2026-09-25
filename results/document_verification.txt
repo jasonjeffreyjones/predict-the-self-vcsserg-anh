@@ -1,0 +1,4 @@
+PASS: article HTML has two embedded figures, three tables, seven references
+PASS: principal estimates appear in rendered HTML; no empty inline intervals
+PASS: supplementary HTML contains diagnostic tables
+PASS: Word document contains two figure assets and populated headline estimates

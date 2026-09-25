@@ -1,0 +1,6 @@
+PASS: original-file SHA-256 and Git blob hashes
+PASS: fold correspondence and donor exclusion
+PASS: independent Dice recomputation for all 200 pairs
+PASS: unique predictions, valid probabilities, training-only target vocabulary
+PASS: all transition probabilities and observed labels independently recomputed
+PASS: every participant-model Brier score recomputed
